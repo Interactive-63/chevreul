@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+coverage/
+*.tsbuildinfo
+.wrangler/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# Logs
+*.log
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini

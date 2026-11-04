@@ -1,0 +1,25 @@
+{
+  "name": "chevreul",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Unmixes a target colour into percentages of a paint palette using spectral models of pigment mixing.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.4",
+    "tailwindcss": "^4.3.4",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.1.0"
+  }
+}
