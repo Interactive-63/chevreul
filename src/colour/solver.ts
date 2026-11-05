@@ -12,6 +12,7 @@ import { ciede2000, cie76 } from './ciede2000';
 import { labToRgb, rgbToLab, type Lab, type Rgb } from './convert';
 import { HEAVY_BODY_SURFACE, type Paint } from './dataset';
 import { createMixer, type MixToLab, type SurfaceTerms } from './kubelka-munk';
+import { simplestParts } from './parts';
 
 /** Options for unmix. */
 export interface UnmixOptions {
@@ -30,6 +31,14 @@ export interface RecipePart {
   percent: number;
 }
 
+/** A recipe restated as small whole parts, which is easier to measure out than percentages. */
+export interface SimpleParts {
+  /** Parts of each paint, in the same order as the recipe's parts. */
+  parts: number[];
+  /** CIEDE2000 of the simple mix from the target. */
+  deltaE2000: number;
+}
+
 /** A mix and how close it comes to the target. */
 export interface Recipe {
   /** The paints used, largest share first. Percentages sum to 100. */
@@ -43,6 +52,8 @@ export interface Recipe {
   deltaE2000: number;
   /** CIE76 from the target. */
   deltaE76: number;
+  /** The same recipe in small whole parts. */
+  simple: SimpleParts;
 }
 
 // Largest combination tried outright. Above this the search grows recipes instead.
@@ -327,24 +338,37 @@ function grow(search: Search, base: Candidate, paletteSize: number): Candidate |
   return best;
 }
 
+/** Turns whole parts into fractions of the mix. */
+function toFractions(parts: readonly number[]): number[] {
+  const total = parts.reduce((sum, value) => sum + value, 0);
+  return parts.map((value) => value / total);
+}
+
 /** Turns a finished candidate into the recipe callers receive. */
 function toRecipe(palette: readonly Paint[], search: Search, candidate: Candidate): Recipe {
   const lab: Lab = { l: 0, a: 0, b: 0 };
   search.mix(candidate.indices, candidate.fractions, lab);
   const { rgb, inGamut } = labToRgb(lab);
-  const parts = candidate.indices
-    .map((index, part) => ({
-      paint: palette[index] as Paint,
-      percent: Math.round((candidate.fractions[part] as number) * PERCENT),
-    }))
+  const sorted = candidate.indices
+    .map((index, part) => ({ index, percent: Math.round((candidate.fractions[part] as number) * PERCENT) }))
     .sort((first, second) => second.percent - first.percent);
+  const indices = sorted.map(({ index }) => index);
+  const shiftFromExact = (parts: readonly number[]): number => {
+    search.mix(indices, toFractions(parts), search.scratch);
+    return ciede2000(lab, search.scratch);
+  };
+  const simple = simplestParts(
+    sorted.map(({ percent }) => percent),
+    shiftFromExact,
+  );
   return {
-    parts,
+    parts: sorted.map(({ index, percent }) => ({ paint: palette[index] as Paint, percent })),
     rgb,
     lab,
     inGamut,
     deltaE2000: candidate.score,
     deltaE76: cie76(search.target, lab),
+    simple: { parts: simple, deltaE2000: scoreMix(search, indices, toFractions(simple)) },
   };
 }
 

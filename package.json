@@ -1,6 +1,7 @@
 {
   "name": "chevreul",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
   "version": "0.1.0",
   "type": "module",
   "description": "Unmixes a target colour into percentages of a paint palette using spectral models of pigment mixing.",
@@ -25,6 +26,7 @@
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "wrangler": "^4.157.0"
   }
 }

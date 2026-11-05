@@ -8,7 +8,7 @@ import type { Swatch } from '../app/paints';
 import { runMix, type AppState, type NoticeKind, type Store } from '../app/state';
 import { byId, element } from './dom';
 import { showPhotoPane } from './photo';
-import { showRecipe } from './recipe';
+import { showRecipe, type RecipeView } from './recipe';
 
 const NOTICES: Record<NoticeKind, string> = {
   storage: "This browser is blocking saved data, so you'll need to tick your paints again next visit.",
@@ -62,6 +62,7 @@ export function mountStage(store: Store, mixer: MixClient, swatches: readonly Sw
   let shownKey: unknown = null;
   let shownRoll: readonly string[] | null = null;
   let leaveWork = (): void => {};
+  const recipeView: RecipeView = { parts: false };
 
   /** Rebuilds the working area for the current state. */
   function renderWork(state: AppState): void {
@@ -70,7 +71,7 @@ export function mountStage(store: Store, mixer: MixClient, swatches: readonly Sw
     floor.replaceChildren();
     work.setAttribute('aria-label', state.pane === 'photo' ? 'Photo' : 'Recipe');
     if (state.pane === 'photo') leaveWork = showPhotoPane(work, store);
-    else if (state.recipe) leaveWork = showRecipe(work, floor, state.recipe, swatches);
+    else if (state.recipe) leaveWork = showRecipe(work, floor, state.recipe, swatches, recipeView);
     else if (state.mixing) work.replaceChildren(message('Finding the mix', 'Working through your paints.'));
     else if (state.mixFailed) {
       work.replaceChildren(

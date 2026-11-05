@@ -10,6 +10,7 @@ import { createMixClient, startMixWorker } from './app/mixer';
 import { readPalette, writePalette } from './app/palette-store';
 import { loadSwatches } from './app/paints';
 import { createStore } from './app/state';
+import { mountAbout } from './ui/about';
 import { mountSetup } from './ui/setup';
 import { mountStage } from './ui/stage';
 import { mountTarget } from './ui/target';
@@ -25,3 +26,4 @@ const store = createStore(saved.palette, {
 mountStage(store, mixer, swatches);
 mountTarget(store, mixer);
 mountSetup(store, swatches);
+mountAbout();

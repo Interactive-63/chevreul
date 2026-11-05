@@ -10,11 +10,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RGB to Paint | Chevreul</title>
     <meta
       name="description"
-      content="Unmix any colour into percentages of your own paint palette, using spectral models of pigment mixing."
+      content="Chevreul uses the Kubelka-Munk model of absorption and scattering values of pigments and mixes the mapping of the spectral curve of the pigments to reach a target RGB value."
     />
-    <title>Chevreul</title>
+    <link rel="canonical" href="https://chevreul.i63.app/" />
+    <meta name="theme-color" content="#1c1a18" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://chevreul.i63.app/" />
+    <meta property="og:title" content="RGB to Paint | Chevreul" />
+    <meta property="og:description" content="The colours you want, from the paints you have." />
+    <meta property="og:image" content="https://chevreul.i63.app/social.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The Chevreul icon beside columns of paint colours." />
+    <meta name="twitter:card" content="summary_large_image" />
     <script type="module" src="/src/main.ts"></script>
   </head>
   <body class="h-dvh overflow-hidden bg-soot font-body text-paper">
@@ -98,7 +112,10 @@
       <footer class="flex flex-none items-center justify-between gap-2.5 border-t-2 border-soot canvas-weave px-3.5 py-2 text-soot">
         <h2 class="font-display text-[0.9375rem] whitespace-nowrap">Your paints</h2>
         <ul id="roll" aria-hidden="true" class="flex min-w-0 flex-1 gap-0.75 overflow-hidden max-sm:hidden"></ul>
-        <button id="edit-paints" type="button" class="tool border border-soot bg-paper text-soot">Edit paints</button>
+        <div class="flex flex-none gap-1.5">
+          <button id="open-about" type="button" class="tool border border-soot">About</button>
+          <button id="edit-paints" type="button" class="tool border border-soot bg-paper text-soot">Edit paints</button>
+        </div>
       </footer>
     </div>
 
@@ -143,6 +160,86 @@
           <button id="setup-done" type="button" class="tool bg-paper text-soot enabled:hover:bg-canvas">Done</button>
         </div>
       </section>
+    </dialog>
+
+    <dialog
+      id="about"
+      aria-labelledby="about-title"
+      class="m-0 h-dvh max-h-none w-dvw max-w-none translate-y-full flex-col overflow-hidden bg-paper text-soot transition-[translate,overlay,display] duration-380 ease-give transition-discrete open:flex open:translate-y-0 backdrop:bg-soot motion-reduce:transition-none starting:open:translate-y-full"
+    >
+      <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div class="mx-auto grid max-w-[60ch] gap-6 px-3.5 py-6 sm:py-10">
+          <header class="grid gap-3">
+            <img src="/favicon.svg" alt="" width="56" height="56" />
+            <h2 id="about-title" tabindex="-1" autofocus class="font-display text-4xl leading-tight outline-none">
+              Chevreul
+            </h2>
+            <p class="text-xl leading-snug text-balance">The colours you want, from the paints you have.</p>
+          </header>
+
+          <section class="grid gap-1.5">
+            <h3 class="font-display text-xl leading-tight">The name</h3>
+            <p class="leading-normal">
+              Michel Eugène Chevreul was a French chemist who contributed to significant developments in science,
+              medicine and art. While working as the director of the dye works at the Gobelins Manufactory in Paris,
+              Chevreul noticed a tendency for a colour to appear to shift toward the complementary of its direct
+              neighbour in both hue and darkness. He called this simultaneous contrast.
+            </p>
+            <p class="leading-normal">
+              Chevreul went on to write extensively about colour in his book "De la Loi du Contraste Simultané Des
+              Couleurs" which then was republished as "The Laws of Contrast of Colour".
+            </p>
+          </section>
+
+          <section class="grid gap-1.5">
+            <h3 class="font-display text-xl leading-tight">Digital colour vs Paint</h3>
+            <p class="leading-normal">
+              Digital colours are mixed using <strong>additive</strong> light (mixing red, green and blue light makes
+              white). Physical paints use <strong>subtractive</strong> mixing which means mixing three different pigments
+              will result in a colour heading towards black. Pigments of physical paint absorb some colours of light and
+              scatter others in different amounts.
+            </p>
+            <p class="leading-normal">
+              The app uses the Kubelka-Munk model of absorption and scattering values of pigments and mixes the mapping
+              of the spectral curve of the pigments to reach a target RGB value.
+            </p>
+          </section>
+
+          <section class="grid gap-1.5">
+            <h3 class="font-display text-xl leading-tight">The paints</h3>
+            <p class="leading-normal">
+              The paints here are spectral data from heavy body acrylic paint. Other paints will mix differently.
+            </p>
+          </section>
+
+          <section class="grid gap-1.5">
+            <h3 class="font-display text-xl leading-tight">Your photos and palette</h3>
+            <p class="leading-normal">
+              Photos open on this device and never leave it. Your palette is saved in this browser. There are no
+              accounts, cookies or tracking.
+            </p>
+          </section>
+
+          <section class="grid gap-1.5">
+            <h3 class="font-display text-xl leading-tight">What to expect</h3>
+            <ul class="grid list-disc gap-1 pl-5 leading-normal">
+              <li>Recipes are predictions. Test them on paper first.</li>
+              <li>Accuracy against real paint hasn't been measured.</li>
+              <li>Screens can't show every paint colour, so what you see here is approximate.</li>
+            </ul>
+          </section>
+
+          <p class="text-sm leading-normal">
+            Chevreul is free. Made by
+            <a href="https://interactive63.com" class="underline">Interactive 63</a>, with the
+            <a href="https://github.com/Interactive-63/chevreul" class="underline">code on GitHub</a>.
+          </p>
+        </div>
+      </div>
+
+      <form method="dialog" class="flex flex-none justify-end border-t-2 border-soot canvas-weave px-3.5 py-2">
+        <button class="tool bg-soot text-paper enabled:hover:bg-ink">Close</button>
+      </form>
     </dialog>
   </body>
 </html>

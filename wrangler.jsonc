@@ -1,0 +1,15 @@
+// Developed by Interactive 63 (https://interactive63.com)
+//
+// Cloudflare Worker configuration: serves the built dist/ folder as static assets at the custom domain. There is no
+// Worker script, as the application runs entirely in the browser.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "chevreul",
+  "compatibility_date": "2026-11-05",
+  "assets": {
+    "directory": "./dist"
+  },
+  // The custom domain is the only public address, so the workers.dev address stays off.
+  "workers_dev": false,
+  "routes": [{ "pattern": "chevreul.i63.app", "custom_domain": true }]
+}
