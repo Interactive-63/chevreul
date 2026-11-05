@@ -1,11 +1,12 @@
 # Developed by Interactive 63 (https://interactive63.com)
 #
-# Response headers for the static assets, applied by Cloudflare. The security policy allows only the app's own files,
-# and photos are unaffected as they are decoded straight onto a canvas. Hashed files in /assets never change, so
-# browsers may keep them, while the page itself is revalidated and picks up each new deploy.
+# Response headers for the static assets, applied by Cloudflare. The security policy allows the app's own files plus
+# Cloudflare Web Analytics, which Cloudflare adds to the page and which reports visits through connect-src. Photos are
+# unaffected as they are decoded straight onto a canvas. Hashed files in /assets never change, so browsers may keep
+# them, while the page itself is revalidated and picks up each new deploy.
 
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self'; font-src 'self'; worker-src 'self'; connect-src 'self' https://cloudflareinsights.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer

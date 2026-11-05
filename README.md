@@ -10,7 +10,7 @@ Use it at [chevreul.i63.app](https://chevreul.i63.app).
 
 Paint does not mix the way light does on a screen. Each pigment absorbs some wavelengths and scatters others, so averaging RGB values gives colours real paint will not make. Chevreul models each paint as absorption and scattering curves across the visible spectrum, combines them with Kubelka-Munk theory, and searches your palette for the mix with the smallest CIEDE2000 difference from the target. A recipe can also be simplified to small whole parts, using the smallest ratio that stays within about one CIEDE2000 of the exact mix.
 
-It runs entirely in the browser. There is no backend, no account, no analytics and no cookies. Photos are read on the device and never uploaded, and the palette is saved in the browser's local storage.
+It runs entirely in the browser. There is no backend, no account and no cookies. Cloudflare Web Analytics counts visits to the site. Photos are read on the device and never uploaded, and the palette is saved in the browser's local storage.
 
 The name comes from Michel Eugène Chevreul, author of *The Laws of Contrast of Colour*.
 
