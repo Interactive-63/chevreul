@@ -140,6 +140,18 @@
             aria-label="Search paints"
             class="h-11 w-full border border-soot bg-paper px-2.5 text-sm text-soot sm:h-9"
           />
+          <div class="flex gap-1.5">
+            <select
+              id="paint-filter"
+              aria-label="Show paints"
+              class="h-11 min-w-0 flex-1 border border-soot bg-paper px-2 font-mono text-[0.6875rem] text-soot sm:h-9"
+            >
+              <option value="all">All paints</option>
+              <option value="ticked">Ticked</option>
+              <option value="unticked">Not ticked</option>
+            </select>
+            <button id="tick-all" type="button" class="tool flex-none border border-soot bg-paper text-soot"></button>
+          </div>
         </div>
         <div id="paint-list" class="min-h-0 flex-1 overflow-y-auto overscroll-contain border-t-2 border-soot bg-paper"></div>
         <p id="paint-none" hidden class="bg-paper p-3.5 text-sm"></p>

@@ -1,9 +1,10 @@
 // Developed by Interactive 63 (https://interactive63.com)
 //
-// Tests that swatches come out as sensible colours and that the basic set matches the paint data.
+// Tests that swatches come out as sensible colours, that the basic set matches the paint data, and the rules behind
+// the setup list's filter and tick-all button.
 import { describe, expect, it } from 'vitest';
 import { hexToRgb } from '../../src/app/format';
-import { BASIC_SET, loadSwatches } from '../../src/app/paints';
+import { BASIC_SET, loadSwatches, paintShown, setShownPaints } from '../../src/app/paints';
 
 const swatches = loadSwatches();
 const byId = new Map(swatches.map((swatch) => [swatch.paint.id, swatch]));
@@ -26,5 +27,30 @@ describe('BASIC_SET', () => {
   it('names six paints that exist', () => {
     expect(BASIC_SET).toHaveLength(6);
     for (const id of BASIC_SET) expect(byId.has(id)).toBe(true);
+  });
+});
+
+describe('paintShown', () => {
+  it('applies the tick filter', () => {
+    expect(paintShown('Titanium White', true, '', 'ticked')).toBe(true);
+    expect(paintShown('Titanium White', false, '', 'ticked')).toBe(false);
+    expect(paintShown('Titanium White', true, '', 'unticked')).toBe(false);
+    expect(paintShown('Titanium White', false, '', 'unticked')).toBe(true);
+    expect(paintShown('Titanium White', false, '', 'all')).toBe(true);
+  });
+
+  it('needs the search text to match as well, ignoring case', () => {
+    expect(paintShown('Titanium White', true, 'white', 'ticked')).toBe(true);
+    expect(paintShown('Titanium White', true, 'blue', 'ticked')).toBe(false);
+  });
+});
+
+describe('setShownPaints', () => {
+  it('adds only paints not already ticked, keeping their order', () => {
+    expect(setShownPaints(['b'], ['a', 'b', 'c'], true)).toEqual(['b', 'a', 'c']);
+  });
+
+  it('removes only the paints on show', () => {
+    expect(setShownPaints(['a', 'b', 'c'], ['a', 'c'], false)).toEqual(['b']);
   });
 });

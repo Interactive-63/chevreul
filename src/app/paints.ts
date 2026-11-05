@@ -1,6 +1,7 @@
 // Developed by Interactive 63 (https://interactive63.com)
 //
-// The paints as the interface sees them: each paint with its swatch colour, in display order, plus the basic set.
+// The paints as the interface sees them: each paint with its swatch colour, in display order, plus the basic set and
+// the rules for which paints the setup list shows.
 // Swatches come from the paint's own K and S through the engine, so they agree with the mixes the app predicts.
 import { labToRgb, reflectanceToXyz, xyzToLab, type Rgb } from '../colour/convert';
 import { HEAVY_BODY_SURFACE, loadPaints, type Paint } from '../colour/dataset';
@@ -12,6 +13,9 @@ export interface Swatch {
   paint: Paint;
   hex: string;
 }
+
+/** Which paints the setup list shows, by whether they are ticked. */
+export type TickFilter = 'all' | 'ticked' | 'unticked';
 
 /** The six paints the "basic set" button ticks: a white, a black and the primaries. */
 export const BASIC_SET: readonly string[] = [
@@ -46,6 +50,19 @@ function displayHue({ r, g, b }: Rgb): number {
   else if (high === g) sector = (b - r) / spread + 2;
   else sector = (r - g) / spread + 4;
   return (sector * DEGREES_PER_SECTOR + FULL_CIRCLE) % FULL_CIRCLE;
+}
+
+/** Whether a paint passes the search text, given in lower case, and the tick filter. */
+export function paintShown(name: string, ticked: boolean, query: string, filter: TickFilter): boolean {
+  if (!name.toLowerCase().includes(query)) return false;
+  if (filter === 'ticked') return ticked;
+  return filter === 'unticked' ? !ticked : true;
+}
+
+/** Ticks or unticks the paints on show and leaves the rest of the palette alone. New paints join at the end. */
+export function setShownPaints(paintIds: readonly string[], shownIds: readonly string[], tick: boolean): string[] {
+  if (!tick) return paintIds.filter((id) => !shownIds.includes(id));
+  return [...paintIds, ...shownIds.filter((id) => !paintIds.includes(id))];
 }
 
 /** Builds every swatch, ordered by hue with neutrals last and lightest first. */
