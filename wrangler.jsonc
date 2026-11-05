@@ -11,5 +11,12 @@
   },
   // The custom domain is the only public address, so the workers.dev address stays off.
   "workers_dev": false,
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+      "persist": true
+    }
+  },
   "routes": [{ "pattern": "chevreul.i63.app", "custom_domain": true }]
 }
