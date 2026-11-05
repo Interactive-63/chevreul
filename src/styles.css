@@ -1,6 +1,128 @@
 /*
  * Developed by Interactive 63 (https://interactive63.com)
  *
- * Global stylesheet: the Tailwind entry point, and the home for design tokens under @theme.
+ * Global stylesheet: the Tailwind entry point and the home of the design tokens. Colours, fonts, the phone-to-laptop
+ * breakpoint, easing and animations live under @theme, so each becomes a utility such as bg-soot, font-display,
+ * ease-give or animate-drop. @utility holds the few looks that need a background or mask no plain utility can express.
  */
 @import 'tailwindcss';
+
+/* Working notes hold design mockups whose class names must not reach the build. */
+@source not '../.claude';
+
+@theme {
+  /* Only the identity palette exists as colour utilities, which stops stray default colours appearing. */
+  --color-*: initial;
+  --color-paper: #e8dfc8;
+  --color-paper-dim: #dcd2b9;
+  --color-soot: #1c1a18;
+  --color-bare: #2a2825;
+  --color-ink: #2b3a5c;
+  --color-wax: #8e2a23;
+  --color-canvas: #bfb59e;
+  --color-canvas-warp: #b1a78f;
+  --color-canvas-weft: #cbc2ac;
+
+  --font-display: 'Young Serif', Georgia, serif;
+  --font-body: 'Literata Variable', Georgia, serif;
+  --font-mono: 'Martian Mono', ui-monospace, monospace;
+
+  /* The layout turns from stacked bands to full-height columns at 520px. */
+  --breakpoint-sm: 32.5rem;
+
+  /* Peel: a slow start that gathers speed. Give: a release that overshoots. Settle: a short spring for small presses. */
+  --ease-peel: cubic-bezier(0.6, 0, 0.9, 0.5);
+  --ease-give: cubic-bezier(0.3, 1.25, 0.5, 1);
+  --ease-settle: cubic-bezier(0.3, 1.6, 0.5, 1);
+
+  --animate-drop: drop 560ms linear both;
+  --animate-peel: peel 320ms var(--ease-peel) both;
+
+  /* A slow lift, a sudden give, then a settle. */
+  @keyframes drop {
+    0% {
+      transform: translateY(-102%);
+    }
+    42% {
+      transform: translateY(-96%);
+      animation-timing-function: cubic-bezier(0.7, 0, 1, 0.6);
+    }
+    82% {
+      transform: translateY(2%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  /* A paint lifts slightly, then falls away to the floor. */
+  @keyframes peel {
+    0% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-3%);
+    }
+    100% {
+      transform: translateY(104%);
+    }
+  }
+}
+
+@layer base {
+  /* Paper against soot in two rings, so the focus mark holds on any paint colour behind it. */
+  :focus-visible {
+    outline: 2px solid var(--color-paper);
+    outline-offset: 0;
+    box-shadow: 0 0 0 4px var(--color-soot);
+  }
+
+  button:not(:disabled),
+  select,
+  label {
+    cursor: pointer;
+  }
+}
+
+/* The small mono button used throughout. */
+@utility tool {
+  @apply min-h-11 px-2.5 py-2 font-mono text-[0.6875rem] font-semibold whitespace-nowrap transition-transform duration-120 ease-settle active:scale-95 disabled:cursor-not-allowed disabled:opacity-45 motion-reduce:transition-none sm:min-h-9;
+}
+
+/* The canvas cloth of the roll and paint list: two fine thread directions over the base colour. */
+@utility canvas-weave {
+  background-color: var(--color-canvas);
+  background-image:
+    repeating-linear-gradient(0deg, var(--color-canvas-warp) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, var(--color-canvas-weft) 0 1px, transparent 1px 3px);
+}
+
+/* Soot brush strokes stretched behind a label, so paper text reads on any paint colour. */
+@utility brush-1 {
+  background: url('./assets/strokes/stroke-1.svg') center / 100% 100% no-repeat;
+}
+
+@utility brush-2 {
+  background: url('./assets/strokes/stroke-2.svg') center / 100% 100% no-repeat;
+}
+
+@utility brush-3 {
+  background: url('./assets/strokes/stroke-3.svg') center / 100% 100% no-repeat;
+}
+
+@utility brush-upright {
+  background: url('./assets/strokes/stroke-upright.svg') center / 100% 100% no-repeat;
+}
+
+/* The same strokes as masks, which turn a block of paint colour into a swatch. */
+@utility brush-mask-1 {
+  mask: url('./assets/strokes/stroke-1.svg') center / 100% 100% no-repeat;
+}
+
+@utility brush-mask-2 {
+  mask: url('./assets/strokes/stroke-2.svg') center / 100% 100% no-repeat;
+}
+
+@utility brush-mask-3 {
+  mask: url('./assets/strokes/stroke-3.svg') center / 100% 100% no-repeat;
+}

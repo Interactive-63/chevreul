@@ -2,7 +2,9 @@
 <!--
   Developed by Interactive 63 (https://interactive63.com)
 
-  Application shell: the single page that hosts the Chevreul interface.
+  Application shell: the fixed structure of the page. The modules in src/ui fill and update it.
+  The target column sits on the left on a laptop and across the top on a phone, the working area holds the recipe or
+  photo, the canvas roll runs along the foot, and the setup dialog pulls up over everything.
 -->
 <html lang="en-AU">
   <head>
@@ -15,7 +17,132 @@
     <title>Chevreul</title>
     <script type="module" src="/src/main.ts"></script>
   </head>
-  <body class="min-h-dvh bg-stone-50 p-6 text-stone-900">
-    <h1 class="text-2xl font-semibold">Chevreul</h1>
+  <body class="h-dvh overflow-hidden bg-soot font-body text-paper">
+    <h1 class="sr-only">Chevreul</h1>
+    <div class="flex h-full flex-col">
+      <div id="notice" hidden class="flex items-center justify-between gap-3 bg-wax px-3.5 py-2 text-sm leading-tight">
+        <p id="notice-text" role="status"></p>
+        <button id="notice-close" type="button" class="tool flex-none border border-current">Dismiss</button>
+      </div>
+
+      <main class="flex min-h-0 flex-1 flex-col sm:flex-row">
+        <section
+          aria-label="Target and closest mix"
+          class="grid flex-none grid-cols-[1.3fr_1fr] border-b-6 border-soot sm:w-1/4 sm:min-w-52 sm:grid-cols-none sm:grid-rows-[minmax(min-content,1.2fr)_minmax(min-content,1fr)] sm:overflow-y-auto sm:border-r-6 sm:border-b-0"
+        >
+          <div
+            id="target-half"
+            class="flex min-w-0 flex-col justify-end gap-1.5 bg-(--paint) p-2.5 text-(--on) sm:p-3.5"
+          >
+            <h2 class="self-start brush-1 py-1.5 pr-4 pl-3 font-display text-xl leading-tight text-paper">Target</h2>
+            <p id="target-note" class="self-start brush-2 py-1 pr-4 pl-3 font-mono text-[0.6875rem] text-paper"></p>
+            <div class="flex items-center gap-1.5">
+              <input
+                id="colour-box"
+                type="color"
+                aria-label="Choose target colour"
+                class="size-11 flex-none cursor-pointer border border-current bg-transparent p-0 sm:size-9"
+              />
+              <input
+                id="hex"
+                type="text"
+                placeholder="Hex code"
+                aria-label="Target hex code"
+                aria-describedby="hex-error"
+                autocomplete="off"
+                spellcheck="false"
+                maxlength="7"
+                class="h-11 w-full min-w-0 border border-current bg-transparent px-2 font-mono text-[0.8125rem] placeholder:text-current placeholder:opacity-70 sm:h-9"
+              />
+            </div>
+            <p id="hex-error" role="alert" hidden class="bg-soot px-2 py-1 font-mono text-[0.6875rem] text-paper">
+              Use six letters or digits from 0 to 9 and A to F, like #9B0E00.
+            </p>
+            <label class="grid gap-1">
+              <span class="justify-self-start brush-3 py-1 pr-4 pl-3 font-mono text-[0.6875rem] text-paper">
+                Paints to use
+              </span>
+              <select
+                id="paint-limit"
+                class="h-11 w-full border border-paper bg-soot px-2 font-mono text-[0.8125rem] text-paper scheme-dark sm:h-9"
+              ></select>
+            </label>
+            <div class="flex flex-wrap gap-1.5">
+              <button id="use-photo" type="button" class="tool flex-1 border border-current">Use a photo</button>
+              <button id="find-mix" type="button" class="tool flex-1 bg-soot text-paper enabled:hover:bg-ink">
+                Find the mix
+              </button>
+            </div>
+          </div>
+
+          <div
+            id="mix-half"
+            class="flex min-w-0 flex-col justify-end gap-1.5 border-l-2 border-soot bg-(--paint) p-2.5 sm:border-t-2 sm:border-l-0 sm:p-3.5"
+          >
+            <h2 class="self-start brush-1 py-1.5 pr-4 pl-3 font-display text-xl leading-tight text-paper">
+              Closest mix
+            </h2>
+            <p
+              id="mix-note"
+              aria-live="polite"
+              class="self-start brush-2 py-1 pr-4 pl-3 font-mono text-[0.6875rem] leading-normal text-paper"
+            ></p>
+          </div>
+        </section>
+
+        <section id="work" aria-label="Recipe" class="relative flex min-h-0 min-w-0 flex-1 flex-col"></section>
+      </main>
+
+      <div id="floor" aria-hidden="true" class="flex h-3 flex-none flex-col justify-end overflow-hidden"></div>
+
+      <footer class="flex flex-none items-center justify-between gap-2.5 border-t-2 border-soot canvas-weave px-3.5 py-2 text-soot">
+        <h2 class="font-display text-[0.9375rem] whitespace-nowrap">Your paints</h2>
+        <ul id="roll" aria-hidden="true" class="flex min-w-0 flex-1 gap-0.75 overflow-hidden max-sm:hidden"></ul>
+        <button id="edit-paints" type="button" class="tool border border-soot bg-paper text-soot">Edit paints</button>
+      </footer>
+    </div>
+
+    <dialog
+      id="setup"
+      aria-labelledby="setup-title"
+      class="m-0 h-dvh max-h-none w-dvw max-w-none translate-y-full flex-col-reverse overflow-hidden bg-soot text-paper transition-[translate,overlay,display] duration-380 ease-give transition-discrete open:flex open:translate-y-0 backdrop:bg-soot motion-reduce:transition-none sm:flex-row starting:open:translate-y-full"
+    >
+      <section
+        aria-label="Paint list"
+        class="flex min-h-0 min-w-0 flex-1 flex-col border-t-2 border-soot canvas-weave text-soot sm:w-[38%] sm:max-w-85 sm:flex-none sm:border-t-0 sm:border-r-2"
+      >
+        <div class="grid gap-2 px-3.5 py-2.5 sm:py-3.5">
+          <h2 id="setup-title" tabindex="-1" autofocus class="font-display text-2xl leading-tight outline-none">
+            Your paints
+          </h2>
+          <p class="text-sm leading-snug max-sm:hidden">Tick the heavy body acrylics you own. Recipes only use these.</p>
+          <input
+            id="paint-search"
+            type="search"
+            placeholder="Search paints"
+            aria-label="Search paints"
+            class="h-11 w-full border border-soot bg-paper px-2.5 text-sm text-soot sm:h-9"
+          />
+        </div>
+        <div id="paint-list" class="min-h-0 flex-1 overflow-y-auto overscroll-contain border-t-2 border-soot bg-paper"></div>
+        <p id="paint-none" hidden class="bg-paper p-3.5 text-sm"></p>
+        <button
+          id="basic-set"
+          type="button"
+          class="min-h-11 border-t-2 border-soot bg-paper px-3.5 py-2.5 text-left font-mono text-[0.6875rem] font-semibold hover:bg-paper-dim"
+        >
+          Start with a basic set of six
+        </button>
+      </section>
+
+      <section aria-label="Chosen paints" class="flex min-h-0 min-w-0 flex-none flex-col max-sm:h-52 sm:flex-1">
+        <div id="bench" class="group relative flex min-h-0 flex-1 overflow-hidden"></div>
+        <div id="bench-floor" aria-hidden="true" class="flex h-3 flex-none flex-col justify-end overflow-hidden"></div>
+        <div class="flex flex-wrap items-center justify-between gap-2.5 border-t-2 border-canvas px-3.5 py-2.5">
+          <p id="paint-count" aria-live="polite" class="min-w-0 text-sm leading-tight tabular-nums"></p>
+          <button id="setup-done" type="button" class="tool bg-paper text-soot enabled:hover:bg-canvas">Done</button>
+        </div>
+      </section>
+    </dialog>
   </body>
 </html>
